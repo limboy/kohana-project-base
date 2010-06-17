@@ -8,7 +8,7 @@
  * @see  http://kohanaframework.org/guide/using.configuration
  * @see  http://php.net/timezones
  */
-date_default_timezone_set('America/Chicago');
+date_default_timezone_set('Asia/Chongqing');
 
 /**
  * Set the default locale.
@@ -16,7 +16,8 @@ date_default_timezone_set('America/Chicago');
  * @see  http://kohanaframework.org/guide/using.configuration
  * @see  http://php.net/setlocale
  */
-setlocale(LC_ALL, 'en_US.utf-8');
+//setlocale(LC_ALL, 'en_US.utf-8');
+i18n::lang('zh-cn');
 
 /**
  * Enable the Kohana auto-loader.
@@ -34,6 +35,8 @@ spl_autoload_register(array('Kohana', 'auto_load'));
  */
 ini_set('unserialize_callback_func', 'spl_autoload_call');
 
+Kohana::$environment = ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')?Kohana::DEVELOPMENT:Kohana::PRODUCTION;
+
 //-- Configuration and initialization -----------------------------------------
 
 /**
@@ -50,8 +53,9 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-	'base_url'   => '/',
+	'base_url'   => dirname($_SERVER['SCRIPT_NAME']).'/',
 	'index_file' => FALSE,
+	'profiling' => (Kohana::$environment == Kohana::DEVELOPMENT)?true:false,
 ));
 
 /**
@@ -68,15 +72,13 @@ Kohana::$config->attach(new Kohana_Config_File);
  * Enable modules. Modules are referenced by a relative or absolute path.
  */
 Kohana::modules(array(
-	// 'auth'       => MODPATH.'auth',       // Basic authentication
-	// 'cache'      => MODPATH.'cache',      // Caching with multiple backends
-	// 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
-	// 'database'   => MODPATH.'database',   // Database access
-	// 'image'      => MODPATH.'image',      // Image manipulation
-	// 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
-	// 'pagination' => MODPATH.'pagination', // Paging of results
-	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
-	));
+	'auth' => MODPATH.'auth',
+	'cache' => MODPATH.'cache',
+	'codebench' => MODPATH.'codebench',
+	'database' => MODPATH.'database',
+	'image' => MODPATH.'image',
+	'orm' => MODPATH.'orm',
+));
 
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
@@ -88,11 +90,44 @@ Route::set('default', '(<controller>(/<action>(/<id>)))')
 		'action'     => 'index',
 	));
 
+
+$request = Request::instance();
+ 
+try
+{
+	// Attempt to execute the response
+	$request->execute();
+}
+catch (Exception $e)
+{
+	if (Kohana::$environment !== Kohana::PRODUCTION)
+	{
+		throw $e;
+	}
+	else
+	{
+		// Log the error
+		Kohana::$log->add(Kohana::ERROR, Kohana::exception_text($e));
+
+		$request->response = View::factory('template')
+			->set('title', $request->status)
+			->set('content', View::factory('errors/'.$request->status));
+	}
+}
+ 
+if ($request->response)
+{
+	// Get the total memory and execution time
+	$total = array(
+	'{memory_usage}' => number_format((memory_get_peak_usage() - KOHANA_START_MEMORY) / 1024, 2).'KB',
+	'{execution_time}' => number_format(microtime(TRUE) - KOHANA_START_TIME, 5).' seconds');
+	 
+	// Insert the totals into the response
+	$request->response = strtr((string) $request->response, $total);
+}
+ 
+ 
 /**
- * Execute the main request. A source of the URI can be passed, eg: $_SERVER['PATH_INFO'].
- * If no source is specified, the URI will be automatically detected.
- */
-echo Request::instance()
-	->execute()
-	->send_headers()
-	->response;
+* Display the request response.
+*/
+echo $request->send_headers()->response;
