@@ -1,0 +1,38 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td { border:0; vertical-align:baseline; background:transparent; margin:0; padding:0; }
+ol,ul { list-style:none; }
+.clearfix:after { content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0; }
+.clearfix { display: inline-block; }
+html[xmlns] .clearfix { display: block; }
+* html .clearfix { height: 1%; }
+a {color:#060;text-decoration:none}
+a:hover {background:#060;color:#fff}
+.grey {color:#999}
+.grey a {color:#999}
+.grey a:hover {color:#fff}
+.hide{display:none}
+.show{display:block}
+table {width:100%}
+textarea,input.text {width:500px;padding:2px;border:1px solid #999;font-size:12px}
+textarea {height:150px}
+form p {padding:0 0 10px 0}
+input.submit {padding:3px}
+
+/* ====== jqmWindow ====== */
+.close_pop{float:right;padding:2px 5px 5px;cursor:pointer;font-size:14px}
+.jqmWindow {display: none;position: fixed;top: 17%;left: 50%;margin-left: -280px;width: 500px; color: #333;background:#fff;border:10px solid #ccc;padding:15px}
+.jqmWindow p {padding:0 0 10px 0}
+.jqmWindow textarea {width:99%;height:150px}
+.jqmWindow label{font-weight:normal;padding:0 10px 0 3px;float:none}
+.jqmOverlay { background-color: #000; }
+/* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
+* iframe.jqm {position:absolute;top:0;left:0;z-index:-1;width: expression(this.parentNode.offsetWidth+'px');height: expression(this.parentNode.offsetHeight+'px');}
+/* Fixed posistioning emulation for IE
+     Star selector used to hide definition from browsers other than IE
+     For valid CSS, use a conditional include instead */
+* html .jqmWindow {position: absolute;top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');}
+
+/* ====== ie7 ====== */
+*:first-child+html .item {}
+
+/* ====== ie6 ====== */
+* html .item {}
