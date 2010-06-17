@@ -17,7 +17,6 @@ date_default_timezone_set('Asia/Chongqing');
  * @see  http://php.net/setlocale
  */
 //setlocale(LC_ALL, 'en_US.utf-8');
-i18n::lang('zh-cn');
 
 /**
  * Enable the Kohana auto-loader.
@@ -26,6 +25,8 @@ i18n::lang('zh-cn');
  * @see  http://php.net/spl_autoload_register
  */
 spl_autoload_register(array('Kohana', 'auto_load'));
+
+i18n::lang('zh-cn');
 
 /**
  * Enable the Kohana auto-loader for unserialization.
@@ -56,12 +57,13 @@ Kohana::init(array(
 	'base_url'   => dirname($_SERVER['SCRIPT_NAME']).'/',
 	'index_file' => FALSE,
 	'profiling' => (Kohana::$environment == Kohana::DEVELOPMENT)?true:false,
+	'cache_dir' => VARPATH.'cache',
 ));
 
 /**
  * Attach the file write to logging. Multiple writers are supported.
  */
-Kohana::$log->attach(new Kohana_Log_File(APPPATH.'logs'));
+Kohana::$log->attach(new Kohana_Log_File(VARPATH.'log'));
 
 /**
  * Attach a file reader to config. Multiple readers are supported.

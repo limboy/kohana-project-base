@@ -79,6 +79,8 @@ unset($application, $modules, $system);
 
 if (file_exists('install'.EXT))
 {
+	is_writable(VARPATH.'log') OR @chmod(VARPATH.'log', 0777);
+	is_writable(VARPATH.'cache') OR @chmod(VARPATH.'cache', 0777);
 	// Load the installation check
 	ob_start();
 	include 'install'.EXT;
@@ -90,7 +92,7 @@ if (file_exists('install'.EXT))
 	else 
 	{
 		ob_end_clean();
-		rename('instal'.EXT, '_install'.EXT);
+		@rename('install'.EXT, '_install'.EXT);
 	}
 }
 
