@@ -60,10 +60,6 @@ Kohana::init(array(
 	'cache_dir' => VARPATH.'cache',
 ));
 
-/**
- * Attach the file write to logging. Multiple writers are supported.
- */
-Kohana::$log->attach(new Kohana_Log_File(VARPATH.'log'));
 
 /**
  * Attach a file reader to config. Multiple readers are supported.
@@ -80,7 +76,14 @@ Kohana::modules(array(
 	'database' => MODPATH.'database',
 	'image' => MODPATH.'image',
 	'orm' => MODPATH.'orm',
+	'log' => MODPATH.'log',
 ));
+
+/**
+ * Attach the file write to logging. Multiple writers are supported.
+ */
+Kohana::$log->attach(new Log_Writer_File(VARPATH.'log'));
+// Kohana::$log->add(Kohana::INFO, 'someone just click the east egg!');
 
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
